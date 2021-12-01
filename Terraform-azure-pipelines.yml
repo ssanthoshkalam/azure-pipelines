@@ -1,0 +1,28 @@
+trigger:
+- main
+
+pool: linux
+
+steps:
+- task: TerraformTaskV2@2
+  inputs:
+    provider: 'aws'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/stacks/eks-cluster'
+    backendServiceAWS: 'aws-terraform'
+    backendAWSBucketName: 'colearn-tfstate'
+    backendAWSKey: 'terraform.tfstate'
+
+- task: TerraformTaskV2@2
+  inputs:
+    provider: 'aws'
+    command: 'plan'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/stacks/eks-cluster'
+    environmentServiceNameAWS: 'aws-terraform'
+
+- task: TerraformTaskV2@2
+  inputs:
+    provider: 'aws'
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/stacks/eks-cluster'
+    environmentServiceNameAWS: 'aws-terraform'
